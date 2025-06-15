@@ -1,0 +1,171 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Intellica | Questionnaire</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    form {
+      width: 100%;
+      max-width: 600px;
+      margin: auto;
+    }
+    h2 {
+      text-align: center;
+      font-size: 2rem;
+      color: var(--primary-clr);
+      margin-bottom: 30px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    select, input[type="time"], input[type="text"] {
+      padding: 8px;
+      width: 80%;
+      max-width: 300px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 0.95rem;
+      margin-top: 8px;
+    }
+    .time-range {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+    .time-range input {
+      flex: 1;
+    }
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .button-row {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 25px;
+    }
+    .btn-modern {
+      padding: 10px 20px;
+      background-color: var(--primary-clr);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+    .btn-modern:hover {
+      background-color: #9c6cd8;
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+  <div class="container" style="flex-direction: column; align-items: center; padding: 40px;">
+    <h2>Questionnaire</h2>
+    <form id="questionnaireForm">
+      <div class="form-group">
+        <label>Do you want to have a strict sleeping schedule?</label>
+        <select name="strictSleep">
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Set your sleeping schedule:</label>
+        <div class="time-range">
+          <input type="time" name="permStart" required>
+          <span>to</span>
+          <input type="time" name="permEnd" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Does your permanent schedule include traveling time?</label>
+        <select name="travelIncluded">
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Personal time preference:</label>
+        <select name="personalTime">
+          <option value="flexible">Flexible</option>
+          <option value="strict">Strict</option>
+          <option value="later">Choose Later</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Set your personal time:</label>
+        <div class="time-range">
+          <input type="time" name="personalStart">
+          <span>to</span>
+          <input type="time" name="personalEnd">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Family time preference:</label>
+        <select name="familyTime">
+          <option value="flexible">Flexible</option>
+          <option value="strict">Strict</option>
+          <option value="later">Choose Later</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Set your family time:</label>
+        <div class="time-range">
+          <input type="time" name="familyStart">
+          <span>to</span>
+          <input type="time" name="familyEnd">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Fill the checklist:</label>
+        <div class="checkbox-group">
+          <label><input type="checkbox" name="status" value="student"> Student</label>
+          <label><input type="checkbox" name="status" value="parttime"> Part-time employee</label>
+          <label><input type="checkbox" name="status" value="fulltime"> Full-time employee</label>
+          <label><input type="checkbox" name="status" value="unemployed"> Unemployed</label>
+          <input type="text" name="statusOther" placeholder="Others...">
+        </div>
+      </div>
+
+      <div class="button-row">
+        <button type="submit" class="btn-modern">Submit</button>
+        <button type="button" class="btn-modern" onclick="location.href='index.html'">Skip</button>
+      </div>
+    </form>
+  </div>
+<a href="login.html" style="position: fixed; bottom: 10px; right: 10px;">
+  <button style="
+    padding: 10px 20px;
+    background-color: var(--primary-clr);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  ">Logout</button>
+</a>
+
+  <script src="questionnaire.js"></script>
+</body>
+</html>

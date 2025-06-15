@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Intellica | Weekly Viewer</title>
+  <link rel="stylesheet" href="calendar.css" />
+  <style>
+    .calendar-container { overflow-x: auto; font-family: Arial, sans-serif; }
+    .banner { background-color: #4F7C82; color: white; text-align: center; padding: 16px; font-size: 24px; font-weight: bold; margin-bottom: 8px; border-radius: 4px; }
+    .header-buttons { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+    .header-buttons button { padding: 8px 14px; font-size: 13px; border-radius: 5px; background-color: #4F7C82; color: white; border: none; cursor: pointer; }
+    .header-buttons button:hover { background-color: #3b6268; }
+    .date-row { display: grid; grid-template-columns: 100px repeat(7, 1fr); font-size: 12px; text-align: center; font-weight: bold; color: #4F7C82; margin-bottom: 0; }
+    .date-row div { padding: 5px 0; }
+    .cell.day:hover { background-color: #f0f8ff; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="calendar-container">
+    <div class="banner">Weekly Viewer</div>
+    <div class="header-buttons">
+      <button id="openEventPopup">Create Event</button>
+      <button onclick="prevWeek()">←</button>
+      <button onclick="goToToday()">Today</button>
+      <button onclick="nextWeek()">→</button>
+      <button onclick="location.href='index.html'">Monthly Viewer</button>
+      <button onclick="clearCalendar()">Clear Calendar</button>
+      <button onclick="location.href='login.html'">Logout</button>
+    </div>
+    <div class="date-row" id="dateRow">
+      <div></div>
+      <div class="day-date" id="date0"></div>
+      <div class="day-date" id="date1"></div>
+      <div class="day-date" id="date2"></div>
+      <div class="day-date" id="date3"></div>
+      <div class="day-date" id="date4"></div>
+      <div class="day-date" id="date5"></div>
+      <div class="day-date" id="date6"></div>
+    </div>
+    <div class="calendar-grid" id="calendarGrid">
+      <div class="cell label"></div>
+      <div class="cell day">Sun</div><div class="cell day">Mon</div><div class="cell day">Tue</div>
+      <div class="cell day">Wed</div><div class="cell day">Thu</div><div class="cell day">Fri</div>
+      <div class="cell day">Sat</div>
+      <script>
+        const times = [...Array(24).keys()];
+        for (let hour of times) {
+          const timeLabel = hour === 0 ? '12 AM' :
+                            hour < 12 ? hour + ' AM' :
+                            hour === 12 ? '12 PM' : (hour - 12) + ' PM';
+          document.write('<div class="cell time">' + timeLabel + '</div>');
+          for (let d = 0; d < 7; d++) {
+            document.write('<div class="cell time-slot" data-hour="' + hour + '" data-day="' + d + '"></div>');
+          }
+        }
+      </script>
+    </div>
+  </div>
+
+  <!-- Single Modal for Create, Edit & Delete -->
+  <div id="eventModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:1000;">
+    <div style="background:white; padding:20px; border-radius:8px; max-width:400px; width:90%; display:flex; flex-direction:column; gap:10px;">
+      <h3 style="text-align:center; margin-bottom:5px;">Event</h3>
+      <input type="hidden" id="modalEventId" />
+      <input type="text" id="modalEventTitle" placeholder="Event Title" style="padding:8px; border-radius:4px; border:1px solid #ccc;" />
+      <label>Repeat on:</label>
+      <div style="display:flex; flex-wrap:wrap; gap:8px;">
+        <label><input type="checkbox" class="repeat-day" value="0"> Sun</label>
+        <label><input type="checkbox" class="repeat-day" value="1"> Mon</label>
+        <label><input type="checkbox" class="repeat-day" value="2"> Tue</label>
+        <label><input type="checkbox" class="repeat-day" value="3"> Wed</label>
+        <label><input type="checkbox" class="repeat-day" value="4"> Thu</label>
+        <label><input type="checkbox" class="repeat-day" value="5"> Fri</label>
+        <label><input type="checkbox" class="repeat-day" value="6"> Sat</label>
+      </div>
+      <label><input type="checkbox" id="repeatAllDays"> Repeat whole week</label>
+      <label><input type="checkbox" id="repeatWeekly"> Repeat every week</label>
+      <label for="modalFrom">From:</label>
+      <input type="time" id="modalFrom" style="padding:8px; border-radius:4px; border:1px solid #ccc;" />
+      <label for="modalTo">To:</label>
+      <input type="time" id="modalTo" style="padding:8px; border-radius:4px; border:1px solid #ccc;" />
+      <div style="display:flex; justify-content:space-between; margin-top:10px;">
+        <button id="deleteModalEvent" style="background:#e74c3c; color:white; display:none;">Delete</button>
+        <button id="saveModalEvent">Save</button>
+        <button id="closeEventPopup" style="background:#999; color:white;">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="weeklyPlanner.js"></script>
+  <script>
+    const openPopupBtn = document.getElementById("openEventPopup"),
+          closePopupBtn = document.getElementById("closeEventPopup"),
+          saveBtn       = document.getElementById("saveModalEvent"),
+          deleteBtn     = document.getElementById("deleteModalEvent"),
+          modal         = document.getElementById("eventModal");
+
+    // Create new event
+    openPopupBtn.addEventListener("click", () => {
+      document.getElementById("modalEventId").value = "";
+      document.getElementById("modalEventTitle").value = "";
+      document.getElementById("modalFrom").value = "";
+      document.getElementById("modalTo").value = "";
+      document.querySelectorAll(".repeat-day").forEach(cb => cb.checked = false);
+      document.getElementById("repeatAllDays").checked = false;
+      deleteBtn.style.display = "none";
+      modal.style.display = "flex";
+    });
+
+    // Cancel
+    closePopupBtn.addEventListener("click", () => modal.style.display = "none");
+
+    // Sync repeat-all checkbox
+    document.getElementById("repeatAllDays").addEventListener("change", function() {
+      document.querySelectorAll(".repeat-day").forEach(cb => cb.checked = this.checked);
+    });
+
+    // Save (create/edit)
+    saveBtn.addEventListener("click", () => {
+      const idField = document.getElementById("modalEventId"),
+            title   = document.getElementById("modalEventTitle").value.trim(),
+            from    = document.getElementById("modalFrom").value,
+            to      = document.getElementById("modalTo").value,
+            checked = Array.from(document.querySelectorAll(".repeat-day:checked")).map(cb => parseInt(cb.value));
+      if (!title || !from || !to || checked.length === 0) {
+        alert("Please fill in all fields and select at least one day.");
+        return;
+      }
+      let events = JSON.parse(localStorage.getItem("events") || "[]");
+      if (idField.value) events = events.filter(e => e.id !== parseInt(idField.value));
+      const baseDate = new Date("2025-01-06");
+      checked.forEach(day => {
+        const d = new Date(baseDate);
+        d.setDate(d.getDate() + (window.currentOffset || 0)*7 + day);
+        events.push({
+          id: idField.value ? parseInt(idField.value) : Date.now() + Math.floor(Math.random()*10000),
+          title, from, to,
+          day: day.toString(),
+          date: d.toISOString().split("T")[0]
+        });
+      });
+      localStorage.setItem("events", JSON.stringify(events));
+      clearCalendar(); window.renderAllEvents();
+      modal.style.display = "none";
+    });
+
+    // Delete event
+    deleteBtn.addEventListener("click", () => {
+      const id = parseInt(document.getElementById("modalEventId").value);
+      let events = JSON.parse(localStorage.getItem("events") || "[]");
+      events = events.filter(e => e.id !== id);
+      localStorage.setItem("events", JSON.stringify(events));
+      clearCalendar(); window.renderAllEvents();
+      modal.style.display = "none";
+    });
+
+    // Show delete button when editing (use capture to bypass stopPropagation)
+    document.addEventListener("click", evt => {
+      if (evt.target.classList.contains("event-block")) {
+        deleteBtn.style.display = "inline-block";
+      }
+    }, true);
+  </script>
+  <script>
+    // Utilities below
+    function clearCalendar() {
+      document.querySelectorAll(".event-block").forEach(el => el.remove());
+    }
+    function goToToday() {
+      const now = new Date().toLocaleString("en-US", { timeZone: "America/Los_Angeles" }),
+            today = new Date(now),
+            jan5  = new Date("2025-01-06"),
+            diff  = Math.floor((today - jan5)/(1000*60*60*24));
+      window.currentOffset = Math.floor(diff/7);
+      updateDates(window.currentOffset);
+      highlightSelectedColumn(today.getDay());
+    }
+    window.onload = () => { if (typeof goToToday === "function") goToToday(); };
+  </script>
+</body>
+</html>

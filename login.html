@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Intellica Login</title>
+  <link rel="stylesheet" href="login.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="form-container">
+      <h2>Intellica</h2>
+      <form id="loginForm" class="form">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" required />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+        <button type="submit" class="submit-btn">Login</button>
+        <p class="signup-link" style="color: white;">Don't have an account? <a href="#" id="showSignupForm">Sign Up</a></p>
+      </form>
+
+      <form id="signupForm" class="form" style="display: none;">
+        <div class="form-group">
+          <label for="newUsername">Username</label>
+          <input type="text" id="newUsername" name="newUsername" required />
+        </div>
+        <div class="form-group">
+          <label for="newPassword">Password</label>
+          <input type="password" id="newPassword" name="newPassword" required />
+        </div>
+        <button type="submit" class="submit-btn">Sign Up</button>
+        <p class="signup-link">Already have an account? <a href="#" id="showLoginForm">Login</a></p>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      // Simulate login success and redirect to question.html
+      window.location.href = "question.html";
+    });
+
+    document.getElementById("showSignupForm").addEventListener("click", function(e) {
+      e.preventDefault();
+      document.getElementById("loginForm").style.display = "none";
+      document.getElementById("signupForm").style.display = "block";
+    });
+
+    document.getElementById("showLoginForm").addEventListener("click", function(e) {
+      e.preventDefault();
+      document.getElementById("signupForm").style.display = "none";
+      document.getElementById("loginForm").style.display = "block";
+    });
+  </script>
+</body>
+</html>
